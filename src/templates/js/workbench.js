@@ -138,32 +138,44 @@ function PanZoom ( targetEl, containerEl, opts ) {
 	}
 
 	function pointerMoved ( event ) {
-		event.preventDefault();
-
-		var points = getPoints( event );
-		var averagePoint = points.reduce( getMidpoint );
-		var averageLastPoint = lastPoints.reduce( getMidpoint );
-		var targetBounds = targetEl.getBoundingClientRect();
-
-		var tmpX = dx + averagePoint.x - averageLastPoint.x;
-		var tmpY = dy + averagePoint.y - averageLastPoint.y;
-		
-		if ( points[1] ) {
-			var scaleDiff = touchDistance( points[0], points[1] ) / touchDistance( lastPoints[0], lastPoints[1] );
-			
-			updateValues(
-				tmpX - ( averagePoint.x - targetBounds.left ) * ( scaleDiff - 1 ),
-				tmpY - ( averagePoint.y - targetBounds.top ) * ( scaleDiff - 1 ),
-				scale * scaleDiff,
-				targetBounds
-			);
-		} else {
-			updateValues( tmpX, tmpY, scale );
+		// We verify if any element are selected, if yes we do not allowed to move on the workbench
+		var verif = true
+		el = document.querySelectorAll('.element')
+		for (let i = 0; i < el.length; i++){
+			if (el[i].classList.contains("selected")){
+				verif = false
+			}
 		}
 
-		update();
-		lastPoints = points;
+		if (verif){
+			event.preventDefault();
+
+			var points = getPoints( event );
+			var averagePoint = points.reduce( getMidpoint );
+			var averageLastPoint = lastPoints.reduce( getMidpoint );
+			var targetBounds = targetEl.getBoundingClientRect();
+	
+			var tmpX = dx + averagePoint.x - averageLastPoint.x;
+			var tmpY = dy + averagePoint.y - averageLastPoint.y;
+			
+			if ( points[1] ) {
+				var scaleDiff = touchDistance( points[0], points[1] ) / touchDistance( lastPoints[0], lastPoints[1] );
+				
+				updateValues(
+					tmpX - ( averagePoint.x - targetBounds.left ) * ( scaleDiff - 1 ),
+					tmpY - ( averagePoint.y - targetBounds.top ) * ( scaleDiff - 1 ),
+					scale * scaleDiff,
+					targetBounds
+				);
+			} else {
+				updateValues( tmpX, tmpY, scale );
+			}
+	
+			update();
+			lastPoints = points;
+		}
 	}
+
 
 	function pointerReleased ( event ) {
 		event.preventDefault();

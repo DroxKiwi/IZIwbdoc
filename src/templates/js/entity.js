@@ -50,7 +50,7 @@ function newGridSnap(){
 // selection function v1
 function selectElement(e){
     var element = e.target
-    if (element.classList.contains("element") || element.classList.contains("page")){
+    if (element.classList.contains("element")){
         if (e.ctrlKey && !e.altKey){
             element.classList.add("selected");
         }
@@ -68,12 +68,19 @@ function selectElement(e){
             }
             element.classList.add("selected");
         }
-        else if (getOnlyId(element.id) == "page") {
-            var elTab = document.getElementsByClassName("element")
-            for (let i = 0; i < elTab.length; i++){
-                elTab[i].classList.remove("selected")
-            }
+    }
+    else {
+        var elTab = document.getElementsByClassName("element")
+        for (let i = 0; i < elTab.length; i++){
+            elTab[i].classList.remove("selected")
         }    
+    }
+}
+
+function deselect(e){
+    var elTab = document.getElementsByClassName("element")
+    for (let i = 0; i < elTab.length; i++){
+        elTab[i].classList.remove("selected")
     }
 }
 
